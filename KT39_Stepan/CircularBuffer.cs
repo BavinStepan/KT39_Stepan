@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class CircularBuffer<T> : IEnumerable<T>
+public class CircularBuffer<T> : ICircularBuffer<T>
 {
     private readonly T[] _buffer;
     private int _head;
@@ -10,7 +10,9 @@ public class CircularBuffer<T> : IEnumerable<T>
 
     public CircularBuffer(int capacity)
     {
-        if (capacity <= 0) throw new ArgumentException("Емкость должна быть больше нуля");
+        if (capacity <= 0)
+            throw new InvalidCapacityException("Емкость буфера должна быть больше нуля");
+
         _buffer = new T[capacity];
         _head = 0;
         _count = 0;

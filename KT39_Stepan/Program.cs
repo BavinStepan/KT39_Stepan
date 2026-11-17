@@ -4,29 +4,73 @@ class Program
 {
     static void Main()
     {
-        var buffer = new CircularBuffer<int>(3);
+        Console.WriteLine(" Инициализация кольцевого буфера");
+        ICircularBuffer<int> buffer = null;
 
-        Console.WriteLine("Добавляем 1, 2, 3:");
-        buffer.Add(1);
-        buffer.Add(2);
-        buffer.Add(3);
-
-        Console.WriteLine("Добавляем 4, 5 (перезапись старых):");
-        buffer.Add(4);
-        buffer.Add(5);
-
-        Console.WriteLine("\nОбход через foreach (от старых к новым):");
-        foreach (var item in buffer)
+        while (buffer == null)
         {
-            Console.Write(item + " ");
+            try
+            {
+                Console.Write("Введите емкость буфера: ");
+                int capacity = int.Parse(Console.ReadLine());
+                buffer = new CircularBuffer<int>(capacity);
+            }
+            catch (InvalidCapacityException ex)
+            {
+                Console.WriteLine($"[Ошибка] {ex.Message}");
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("[Ошибка] Введите корректное целое число!");
+            }
         }
-        Console.WriteLine();
 
-        Console.WriteLine("\nОбход через Reverse() (от новых к старым):");
-        foreach (var item in buffer.Reverse())
+        while (true)
         {
-            Console.Write(item + " ");
+            Console.WriteLine("\n Меню");
+            Console.WriteLine("1. Добавить элемент");
+            Console.WriteLine("2. Показать буфер (foreach)");
+            Console.WriteLine("3. Показать буфер (Reverse)");
+            Console.WriteLine("4. Выход");
+            Console.Write("Выберите действие: ");
+
+            string choice = Console.ReadLine();
+
+            switch (choice)
+            {
+                case "1":
+                    Console.Write("Введите число для добавления: ");
+                    if (int.TryParse(Console.ReadLine(), out int item))
+                    {
+                        buffer.Add(item);
+                        Console.WriteLine($"Элемент {item} добавлен.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("[Ошибка] Нужно ввести число!");
+                    }
+                    break;
+
+                case "2":
+                    Console.Write("Буфер (от старых к новым): ");
+                    foreach (var val in buffer) Console.Write(val + " ");
+                    Console.WriteLine();
+                    break;
+
+                case "3":
+                    Console.Write("Буфер (от новых к старым): ");
+                    foreach (var val in buffer.Reverse()) Console.Write(val + " ");
+                    Console.WriteLine();
+                    break;
+
+                case "4":
+                    Console.WriteLine("Выход из программы...");
+                    return;
+
+                default:
+                    Console.WriteLine("[Ошибка] Неверный пункт меню.");
+                    break;
+            }
         }
-        Console.WriteLine();
     }
 }
